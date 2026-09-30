@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mannaka QR: text in the middle of your QR code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Keep in sync with FONT_CSS_URL in src/qr/fonts.js -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&amp;family=JetBrains+Mono:wght@700&amp;family=Noto+Sans+JP:wght@700;800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Mannaka QR</h1>
+    <p class="tag">真ん中 (mannaka): right in the middle. Make QR codes with your own text in the center, not just a picture, sized so phones can still scan them.</p>
+  </header>
+
+  <nav class="ctabs" role="tablist" aria-label="What the code contains">
+    <button role="tab" data-ct="url" aria-selected="true">Link</button>
+    <button role="tab" data-ct="text" aria-selected="false">Text</button>
+    <button role="tab" data-ct="email" aria-selected="false">Email</button>
+    <button role="tab" data-ct="tel" aria-selected="false">Phone</button>
+    <button role="tab" data-ct="sms" aria-selected="false">SMS</button>
+    <button role="tab" data-ct="wifi" aria-selected="false">WiFi</button>
+    <button role="tab" data-ct="vcard" aria-selected="false">Contact</button>
+    <button role="tab" data-ct="geo" aria-selected="false">Location</button>
+    <button role="tab" data-ct="list" aria-selected="false" class="listtab">List: many codes</button>
+  </nav>
+
+  <div class="grid">
+    <section class="steps" aria-label="Settings">
+
+      <details class="step" open>
+        <summary><span class="num">1</span><span class="st">Content</span><span class="sum" id="sumContent"></span></summary>
+        <div class="stepbody">
+          <div class="ct" data-panel="url">
+            <label class="lbl" for="ctUrl">Link</label>
+            <input type="text" id="ctUrl" value="https://example.com/item/8f3a91c2" autocomplete="off" spellcheck="false" inputmode="url">
+            <div class="hint">https:// is added for you if you leave it off.</div>
+          </div>
+          <div class="ct" data-panel="text" hidden>
+            <label class="lbl" for="ctText">Text</label>
+            <textarea id="ctText" rows="4">こんにちは</textarea>
+          </div>
+          <div class="ct" data-panel="email" hidden>
+            <div class="field"><label class="lbl" for="ctEmail">Email address</label><input type="text" id="ctEmail" inputmode="email" autocomplete="off" placeholder="name@example.com"></div>
+            <div class="field"><label class="lbl" for="ctEmailSubj">Subject</label><input type="text" id="ctEmailSubj" autocomplete="off"></div>
+            <div class="field"><label class="lbl" for="ctEmailBody">Message</label><textarea id="ctEmailBody" rows="3"></textarea></div>
+          </div>
+          <div class="ct" data-panel="tel" hidden>
+            <label class="lbl" for="ctTel">Phone number</label>
+            <input type="text" id="ctTel" inputmode="tel" autocomplete="off" placeholder="+81 90 1234 5678">
+            <div class="hint">Include the country code so it works from any phone.</div>
+          </div>
+          <div class="ct" data-panel="sms" hidden>
+            <div class="field"><label class="lbl" for="ctSmsNum">Phone number</label><input type="text" id="ctSmsNum" inputmode="tel" autocomplete="off" placeholder="+81 90 1234 5678"></div>
+            <div class="field"><label class="lbl" for="ctSmsMsg">Message</label><textarea id="ctSmsMsg" rows="3"></textarea></div>
+          </div>
+          <div class="ct" data-panel="wifi" hidden>
+            <div class="field"><label class="lbl" for="ctWifiSsid">Network name (SSID)</label><input type="text" id="ctWifiSsid" autocomplete="off" spellcheck="false"></div>
+            <div class="field row">
+              <div><label class="lbl" for="ctWifiPass">Password</label><input type="text" id="ctWifiPass" autocomplete="off" spellcheck="false"></div>
+              <div><label class="lbl" for="ctWifiEnc">Security</label>
+                <select id="ctWifiEnc"><option value="WPA">WPA / WPA2 / WPA3</option><option value="WEP">WEP</option><option value="nopass">None</option></select></div>
+            </div>
+            <label class="check"><input type="checkbox" id="ctWifiHidden"> Hidden network</label>
+          </div>
+          <div class="ct" data-panel="vcard" hidden>
+            <div class="field row">
+              <div><label class="lbl" for="ctVLast">Last name</label><input type="text" id="ctVLast" autocomplete="off"></div>
+              <div><label class="lbl" for="ctVFirst">First name</label><input type="text" id="ctVFirst" autocomplete="off"></div>
+            </div>
+            <div class="field row">
+              <div><label class="lbl" for="ctVOrg">Company</label><input type="text" id="ctVOrg" autocomplete="off"></div>
+              <div><label class="lbl" for="ctVTitle">Job title</label><input type="text" id="ctVTitle" autocomplete="off"></div>
+            </div>
+            <div class="field row">
+              <div><label class="lbl" for="ctVMobile">Mobile</label><input type="text" id="ctVMobile" inputmode="tel" autocomplete="off"></div>
+              <div><label class="lbl" for="ctVPhone">Work phone</label><input type="text" id="ctVPhone" inputmode="tel" autocomplete="off"></div>
+            </div>
+            <div class="field row">
+              <div><label class="lbl" for="ctVEmail">Email</label><input type="text" id="ctVEmail" inputmode="email" autocomplete="off"></div>
+              <div><label class="lbl" for="ctVUrl">Website</label><input type="text" id="ctVUrl" inputmode="url" autocomplete="off"></div>
+            </div>
+            <div class="field"><label class="lbl" for="ctVStreet">Street</label><input type="text" id="ctVStreet" autocomplete="off"></div>
+            <div class="field row3">
+              <div><label class="lbl" for="ctVCity">City</label><input type="text" id="ctVCity" autocomplete="off"></div>
+              <div><label class="lbl" for="ctVState">State / prefecture</label><input type="text" id="ctVState" autocomplete="off"></div>
+              <div><label class="lbl" for="ctVZip">Postal code</label><input type="text" id="ctVZip" autocomplete="off"></div>
+            </div>
+            <div class="field"><label class="lbl" for="ctVCountry">Country</label><input type="text" id="ctVCountry" autocomplete="off"></div>
+          </div>
+          <div class="ct" data-panel="geo" hidden>
+            <div class="field row">
+              <div><label class="lbl" for="ctLat">Latitude</label><input type="text" id="ctLat" inputmode="decimal" autocomplete="off" placeholder="35.6812"></div>
+              <div><label class="lbl" for="ctLng">Longitude</label><input type="text" id="ctLng" inputmode="decimal" autocomplete="off" placeholder="139.7671"></div>
+            </div>
+            <div class="hint">In Google Maps, right-click a spot and click the numbers at the top of the menu to copy them.</div>
+          </div>
+          <div class="ct" data-panel="list" hidden>
+            <label class="lbl" for="idMany">One code per line: label, then QR content</label>
+            <textarea id="idMany" spellcheck="false">ID-00001, https://example.com/item/8f3a91c2
+ID-00002, https://example.com/item/b72e04d9
+ID-00003, https://example.com/item/51c6aa7e
+ID-00004, https://example.com/item/e09d3b18
+ID-00005, https://example.com/item/7ab24f60
+ID-00006, https://example.com/item/c3f8e215</textarea>
+            <div class="hint">Separate the two with a comma, a Japanese comma (、or ，) or a tab. Easiest: labels in column A and content in column B of a spreadsheet, then copy both columns and paste here.</div>
+          </div>
+        </div>
+      </details>
+
+      <details class="step" open>
+        <summary><span class="num">2</span><span class="st">Label in the middle</span><span class="sum" id="sumLabel"></span></summary>
+        <div class="stepbody">
+          <div class="field" id="labelOneWrap">
+            <label class="lbl" for="idOne">Label text</label>
+            <input type="text" id="idOne" value="ID-00042" autocomplete="off" spellcheck="false">
+            <div class="hint">Japanese works too, for example 受付 or A-12番.</div>
+          </div>
+          <div class="field">
+            <label class="lbl" for="font">Text style</label>
+            <select id="font">
+              <option value="bold">Bold</option>
+              <option value="narrow">Condensed (fits longer labels)</option>
+              <option value="mono">Monospace (clear 0 / O)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl" for="lsize">Label size <span class="muted" id="lsizeOut" style="font-weight:400"></span></label>
+            <input type="range" id="lsize" class="zones" min="40" max="200" step="5" value="100" aria-describedby="lsizeHint">
+            <div class="zonelabels" aria-hidden="true"><span class="z-safe">Safe</span><span class="z-unsafe">Unsafe</span><span class="z-bad" id="zBad">Won't scan</span></div>
+            <div class="hint" id="lsizeHint">The zones are calculated for each code from its content and label: short content and short labels can go bigger. Safe keeps half of the code's damage allowance spare for print wear and glare.</div>
+          </div>
+          <div class="field">
+            <label class="lbl" for="grid">Grid size</label>
+            <select id="grid">
+              <option value="auto" selected>Auto: fit the biggest label</option>
+              <option value="min">Smallest grid for the content</option>
+            </select>
+            <div class="hint">Short content fits a small grid with little room in the middle. Auto may use a finer grid so the label can be bigger.</div>
+          </div>
+        </div>
+      </details>
+
+      <details class="step">
+        <summary><span class="num">3</span><span class="st">Colors</span><span class="sum" id="sumColors"></span></summary>
+        <div class="stepbody">
+          <div class="field">
+            <span class="lbl" id="codeColorLbl">Code color</span>
+            <div class="seg" role="group" aria-labelledby="codeColorLbl">
+              <button type="button" data-group="codeMode" data-value="solid" aria-pressed="true">Solid</button>
+              <button type="button" data-group="codeMode" data-value="gradient" aria-pressed="false">Gradient</button>
+            </div>
+            <div class="colors sub">
+              <label><input type="color" id="fg" value="#000000"> <span id="fgName">Color</span></label>
+              <label id="fg2Wrap" hidden><input type="color" id="fg2" value="#1D4ED8"> End color</label>
+            </div>
+            <div id="dirWrap" class="sub" hidden>
+              <label class="lbl" for="dir">Direction</label>
+              <select id="dir">
+                <option value="lr">Left to right</option>
+                <option value="tb">Top to bottom</option>
+                <option value="dd">Diagonal, top-left to bottom-right</option>
+                <option value="du">Diagonal, bottom-left to top-right</option>
+                <option value="rad">From the center out</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <span class="lbl" id="eyeColorLbl">Corner eye color</span>
+            <div class="seg" role="group" aria-labelledby="eyeColorLbl">
+              <button type="button" data-group="eyeMode" data-value="same" aria-pressed="true">Same as code</button>
+              <button type="button" data-group="eyeMode" data-value="custom" aria-pressed="false">Custom</button>
+            </div>
+            <div class="colors sub" id="eyeColors" hidden>
+              <label><input type="color" id="ef" value="#000000"> Frame</label>
+              <label><input type="color" id="eb" value="#000000"> Center</label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="lbl" id="labelColorLbl">Label color</span>
+            <div class="seg" role="group" aria-labelledby="labelColorLbl">
+              <button type="button" data-group="labelMode" data-value="solid" aria-pressed="true">Solid</button>
+              <button type="button" data-group="labelMode" data-value="match" aria-pressed="false">Match code</button>
+            </div>
+            <div class="colors sub" id="tcWrap">
+              <label><input type="color" id="tc" value="#000000"> Color</label>
+            </div>
+          </div>
+          <div class="field">
+            <span class="lbl">Background</span>
+            <div class="colors">
+              <label><input type="color" id="bg" value="#ffffff"> Color</label>
+            </div>
+            <div class="hint" id="colorHint">Keep the code dark on a light background for reliable scanning.</div>
+          </div>
+        </div>
+      </details>
+
+      <details class="step">
+        <summary><span class="num">4</span><span class="st">Shapes</span><span class="sum" id="sumShapes"></span></summary>
+        <div class="stepbody">
+          <div class="field">
+            <span class="lbl" id="bodyLbl">Dots</span>
+            <div class="shapes" role="group" aria-labelledby="bodyLbl">
+              <button type="button" data-group="body" data-value="square" aria-pressed="true" aria-label="Square" title="Square"></button>
+              <button type="button" data-group="body" data-value="rounded" aria-pressed="false" aria-label="Rounded" title="Rounded"></button>
+              <button type="button" data-group="body" data-value="dots" aria-pressed="false" aria-label="Round dots" title="Round dots"></button>
+              <button type="button" data-group="body" data-value="fluid" aria-pressed="false" aria-label="Connected" title="Connected"></button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="lbl" id="frameLbl">Corner eye frame</span>
+            <div class="shapes" role="group" aria-labelledby="frameLbl">
+              <button type="button" data-group="eyeFrame" data-value="square" aria-pressed="true" aria-label="Square" title="Square"></button>
+              <button type="button" data-group="eyeFrame" data-value="rounded" aria-pressed="false" aria-label="Rounded" title="Rounded"></button>
+              <button type="button" data-group="eyeFrame" data-value="circle" aria-pressed="false" aria-label="Circle" title="Circle"></button>
+              <button type="button" data-group="eyeFrame" data-value="leaf" aria-pressed="false" aria-label="Leaf" title="Leaf"></button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="lbl" id="ballLbl">Corner eye center</span>
+            <div class="shapes" role="group" aria-labelledby="ballLbl">
+              <button type="button" data-group="eyeBall" data-value="square" aria-pressed="true" aria-label="Square" title="Square"></button>
+              <button type="button" data-group="eyeBall" data-value="rounded" aria-pressed="false" aria-label="Rounded" title="Rounded"></button>
+              <button type="button" data-group="eyeBall" data-value="circle" aria-pressed="false" aria-label="Circle" title="Circle"></button>
+              <button type="button" data-group="eyeBall" data-value="leaf" aria-pressed="false" aria-label="Leaf" title="Leaf"></button>
+            </div>
+            <div class="hint">Every shape is scan-checked. Square is the safest for small prints.</div>
+          </div>
+        </div>
+      </details>
+
+      <details class="step">
+        <summary><span class="num">5</span><span class="st">Size and printing</span><span class="sum" id="sumSize"></span></summary>
+        <div class="stepbody">
+          <div class="field">
+            <label class="lbl" for="sizePx">Image size</label>
+            <div class="unit" style="max-width:200px"><input type="text" inputmode="numeric" id="sizePx" value="1024" autocomplete="off" aria-describedby="sizeHint"><span>px</span></div>
+            <div class="hint" id="sizeHint">Square image, so one number sets both sides (64 to 4096).</div>
+          </div>
+          <div class="field row">
+            <div>
+              <label class="lbl" for="pSize">Printed size</label>
+              <select id="pSize">
+                <option value="2.54">2.5 cm (1 in)</option>
+                <option value="3.81">4 cm (1.5 in)</option>
+                <option value="5.08" selected>5 cm (2 in)</option>
+                <option value="7.62">7.5 cm (3 in)</option>
+                <option value="10.16">10 cm (4 in)</option>
+                <option value="15.24">15 cm (6 in)</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl" for="pPaper">Paper</label>
+              <select id="pPaper">
+                <option value="a4">A4</option>
+                <option value="letter">US Letter</option>
+              </select>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="pCut" checked> Dashed cut lines when printing</label>
+          <div class="hint" id="pHint"></div>
+        </div>
+      </details>
+
+      <div class="reset">
+        <span class="muted" id="savedNote">Your inputs are remembered in this browser.</span>
+        <button class="linkbtn" id="resetBtn" type="button">Reset everything</button>
+      </div>
+    </section>
+
+    <aside class="stagecol" aria-live="polite">
+      <div id="oneView" class="stage">
+        <div class="tape" id="tape"><canvas id="preview" width="1024" height="1024" aria-label="QR code preview"></canvas></div>
+        <div class="viewseg" role="group" aria-label="Preview zoom">
+          <button type="button" data-view="fit" aria-pressed="true">Fit</button>
+          <button type="button" data-view="actual" aria-pressed="false">Actual pixels</button>
+        </div>
+        <div id="status" class="status"></div>
+        <span class="muted small" id="oneInfo"></span>
+      </div>
+
+      <div id="manyView" class="stage" hidden>
+        <span class="muted" id="manyInfo"></span>
+        <div id="manyStatus" class="status"></div>
+        <div id="sheet" class="sheet"></div>
+      </div>
+
+      <div class="dlbox">
+        <div class="seg seg3" role="group" aria-label="File format">
+          <button type="button" data-group="fmt" data-value="png" aria-pressed="true">PNG</button>
+          <button type="button" data-group="fmt" data-value="svg" aria-pressed="false">SVG</button>
+          <button type="button" data-group="fmt" data-value="pdf" aria-pressed="false">PDF</button>
+        </div>
+        <div class="actions">
+          <button class="btn" id="dlOne" type="button">Download PNG</button>
+          <button class="btn alt" id="prOne" type="button">Print</button>
+          <button class="btn" id="dlMany" type="button" hidden>Download all</button>
+          <button class="btn alt" id="prMany" type="button" hidden>Print all</button>
+        </div>
+        <div class="hint" id="fmtHint"></div>
+      </div>
+    </aside>
+  </div>
+</div>
+<footer class="foot">
+  <p class="credit" id="credit">Made by <a href="https://github.com/aumsaur" target="_blank" rel="noopener">aumsaur</a></p>
+  <details class="oss">
+    <summary>Open-source credits</summary>
+    <p>This tool runs entirely in your browser and is built with these open-source libraries:</p>
+    <ul>
+      <li><a href="https://github.com/kazuhikoarase/qrcode-generator" target="_blank" rel="noopener">QR Code Generator</a> by Kazuhiko Arase, MIT license</li>
+      <li><a href="https://github.com/cozmo/jsQR" target="_blank" rel="noopener">jsQR</a> by Cosmo Wolfe, Apache License 2.0</li>
+      <li><a href="https://github.com/Stuk/jszip" target="_blank" rel="noopener">JSZip</a> by Stuart Knightley and contributors, MIT license</li>
+      <li><a href="https://github.com/parallax/jsPDF" target="_blank" rel="noopener">jsPDF</a> by James Hall, yWorks GmbH and contributors, MIT license</li>
+      <li>Typefaces <a href="https://fonts.google.com/specimen/Archivo" target="_blank" rel="noopener">Archivo</a>, <a href="https://fonts.google.com/specimen/JetBrains+Mono" target="_blank" rel="noopener">JetBrains Mono</a> and <a href="https://fonts.google.com/noto/specimen/Noto+Sans+JP" target="_blank" rel="noopener">Noto Sans JP</a>, SIL Open Font License</li>
+    </ul>
+    <p>QR Code is a registered trademark of DENSO WAVE INCORPORATED.</p>
+  </details>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<div class="pdfnote" id="pdfNote" hidden role="alert">
+  <span>Printing is blocked in this view. Get a print-ready PDF instead, then print it from your PDF viewer.</span>
+  <button class="btn" id="pdfBtn" type="button">Download PDF for printing</button>
+  <button class="linkbtn" id="pdfClose" type="button">Dismiss</button>
+</div>
+<div id="printSheet" aria-hidden="true"></div>
+<style id="pageStyle">@page{size:A4 portrait;margin:10mm}</style>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
