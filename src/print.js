@@ -2,7 +2,7 @@
 import { jsPDF } from "jspdf";
 import { $, toast } from "./ui/dom.js";
 import { state } from "./state.js";
-import { opts } from "./form.js";
+import { opts, labelFor } from "./form.js";
 import { getContent, parseRows } from "./content.js";
 import { QUIET } from "./qr/engine.js";
 import { drawCode } from "./qr/render.js";
@@ -42,7 +42,7 @@ async function renderPrintImages(btn){
   var items = printItems(), out = [], px = printPx(), o = opts(), cv = document.createElement("canvas");
   var label = btn.textContent;
   for (var i = 0; i < items.length; i++) {
-    try { drawCode(cv, items[i].data, items[i].id, o, px); } catch (e) { continue; }
+    try { drawCode(cv, items[i].data, labelFor(items[i].id), o, px); } catch (e) { continue; }
     out.push(cv.toDataURL("image/png"));
     if (items.length > 1 && i % 4 === 0) { btn.textContent = "Preparing " + (i + 1) + " / " + items.length; await new Promise(function(r){ setTimeout(r, 0); }); }
   }

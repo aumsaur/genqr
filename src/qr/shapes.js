@@ -26,7 +26,7 @@ function eyeShape(style, x, y, z, rRound, rLeaf, leaf){
 export function codePaths(L, opt){
   var Q = L.Q, n = Q.n, s = L.s, o = QUIET * s, qr = Q.qr, b = L.box;
   function inFinder(r, c){ return (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7); }
-  function inBox(r, c){ return L.hasText && c >= b.x0 && c < b.x0 + b.w && r >= b.y0 && r < b.y0 + b.h; }
+  function inBox(r, c){ return L.hasLabel && c >= b.x0 && c < b.x0 + b.w && r >= b.y0 && r < b.y0 + b.h; }
   function on(r, c){ return r >= 0 && c >= 0 && r < n && c < n && qr.isDark(r, c) && !inFinder(r, c) && !inBox(r, c); }
   var body = [], shape = opt.body || "square";
   for (var r = 0; r < n; r++) {
@@ -52,6 +52,14 @@ export function codePaths(L, opt){
     balls.push(eyeShape(opt.eyeBall, x + 2 * s, y + 2 * s, 3 * s, 0.9 * s, 1.3 * s, e[2]));
   });
   return { body: body.join(""), frames: frames.join(""), balls: balls.join("") };
+}
+
+// The 3 × 3 center of each corner eye, where a corner logo goes
+export function eyeCenters(L){
+  var n = L.Q.n, s = L.s, o = QUIET * s;
+  return [[0, 0], [0, n - 7], [n - 7, 0]].map(function(e){
+    return { x: o + (e[1] + 2) * s, y: o + (e[0] + 2) * s, w: 3 * s, h: 3 * s };
+  });
 }
 
 // Small previews for the shape buttons, drawn with the same geometry

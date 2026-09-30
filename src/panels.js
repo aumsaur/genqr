@@ -19,10 +19,11 @@ export function updateFmtUI(){
 export function updateSummaries(){
   var C = state.mode === "one" ? getContent().data : "";
   $("sumContent").textContent = state.mode === "many" ? parseRows().length + " lines" : (C ? C.replace(/\s+/g, " ").slice(0, 40) : "");
-  $("sumLabel").textContent = (state.mode === "one" ? $("idOne").value.trim() : "from the list") + ", " + $("lsize").value + "%";
-  $("sumColors").textContent = modes.codeMode === "gradient" ? "Gradient" : "Solid";
+  var what = modes.labelKind === "image" ? (state.images.middle ? "Logo" : "No logo yet") : state.mode === "one" ? $("idOne").value.trim() : "from the list";
+  $("sumLabel").textContent = what + ", " + $("lsize").value + "%";
   var nm = function(g){ var b = document.querySelector('[data-group="' + g + '"][aria-pressed="true"]'); return b ? b.getAttribute("aria-label").toLowerCase() : ""; };
-  $("sumShapes").textContent = nm("body") + " dots, " + nm("eyeFrame") + " eyes";
+  $("sumColors").textContent = modes.codeMode === "gradient" ? "Gradient, " + nm("dir") : "Solid";
+  $("sumShapes").textContent = nm("body") + " dots, " + nm("eyeFrame") + " eyes" + (modes.eyeFill === "image" ? ", logo centers" : "");
   $("sumSize").textContent = getSize() + " px, printed " + $("pSize").selectedOptions[0].textContent.split(" (")[0];
 }
 
@@ -47,15 +48,61 @@ export function showLsize(){
   $("zBad").textContent = byBudget ? "Won't scan" : "Max";
 }
 
+// Text or logo in the middle, shape or logo in the corners: show the fields that apply
+function showPicker(prefix, pic){
+  var thumb = $(prefix + "Thumb");
+  thumb.hidden = !pic; if (pic) thumb.src = pic.src;
+  $(prefix + "Name").textContent = pic ? pic.name : "No image chosen";
+  $(prefix + "Clear").hidden = !pic;
+  $(prefix + "Pick").textContent = pic ? "Change image" : "Choose image";
+}
+export function updateImageUI(){
+  var logo = modes.labelKind === "image";
+  $("labelOneWrap").hidden = logo || state.mode !== "one";
+  $("imageWrap").hidden = !logo;
+  $("fontWrap").hidden = logo;
+  $("labelColorWrap").hidden = logo;
+  showPicker("mid", state.images.middle);
+  var corner = modes.eyeFill === "image";
+  $("ballShapes").hidden = corner;
+  $("cornerImgWrap").hidden = !corner;
+  $("cornerDrop").hidden = modes.cornerSrc !== "own";
+  showPicker("corner", state.images.corner);
+}
+
+// Gradient direction buttons: a swatch of the current gradient, with arrows showing which way it runs
+function arrow(x1, y1, x2, y2){
+  var len = Math.hypot(x2 - x1, y2 - y1), ux = (x2 - x1) / len, uy = (y2 - y1) / len;
+  var hx = x2 - ux * 5, hy = y2 - uy * 5;
+  return "M" + x1 + " " + y1 + "L" + x2 + " " + y2 + "M" + (hx - uy * 4) + " " + (hy + ux * 4) + "L" + x2 + " " + y2 + "L" + (hx + uy * 4) + " " + (hy - ux * 4);
+}
+var DIR_LINE = { lr: [5, 16, 27, 16], tb: [16, 5, 16, 27], dd: [7, 7, 25, 25], du: [7, 25, 25, 7] };
+function dirIcon(dir, c1, c2){
+  var stops = '<stop offset="0" stop-color="' + c1 + '"/><stop offset="1" stop-color="' + c2 + '"/>', id = "gd-" + dir, grad, d;
+  if (dir === "rad") {
+    grad = '<radialGradient id="' + id + '" gradientUnits="userSpaceOnUse" cx="16" cy="16" r="17">' + stops + "</radialGradient>";
+    d = arrow(16, 12, 16, 4) + arrow(16, 20, 16, 28) + arrow(12, 16, 4, 16) + arrow(20, 16, 28, 16);
+  } else {
+    var L = DIR_LINE[dir];
+    grad = '<linearGradient id="' + id + '" gradientUnits="userSpaceOnUse" x1="' + L[0] + '" y1="' + L[1] + '" x2="' + L[2] + '" y2="' + L[3] + '">' + stops + "</linearGradient>";
+    d = arrow(L[0], L[1], L[2], L[3]);
+  }
+  // The arrow is drawn twice, dark under light, so it shows on any colors
+  return '<svg viewBox="0 0 32 32" aria-hidden="true"><defs>' + grad + '</defs><rect x="1" y="1" width="30" height="30" rx="5" fill="url(#' + id + ')"/>' +
+    '<path d="' + d + '" fill="none" stroke="rgba(0,0,0,.45)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<path d="' + d + '" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
 export function updateColorUI(){
   var g = modes.codeMode === "gradient";
+  if (g) document.querySelectorAll('[data-group="dir"]').forEach(function(b){ b.innerHTML = dirIcon(b.dataset.value, $("fg").value, $("fg2").value); });
   $("fg2Wrap").hidden = !g; $("dirWrap").hidden = !g;
   $("fgName").textContent = g ? "Start color" : "Color";
   $("tcWrap").hidden = modes.labelMode === "match";
   $("eyeColors").hidden = modes.eyeMode !== "custom";
   // Contrast against the background (WCAG formula): below 3:1 is hard for cameras too
-  var cols = [$("fg").value].concat(g ? [$("fg2").value] : []).concat(modes.labelMode === "solid" ? [$("tc").value] : [])
-    .concat(modes.eyeMode === "custom" ? [$("ef").value, $("eb").value] : []);
+  var cols = [$("fg").value].concat(g ? [$("fg2").value] : []).concat(modes.labelMode === "solid" && modes.labelKind === "text" ? [$("tc").value] : [])
+    .concat(modes.eyeMode === "custom" ? [$("ef").value].concat(modes.eyeFill === "image" ? [] : [$("eb").value]) : []);
   var worst = Math.min.apply(null, cols.map(function(c){ return contrast(c, $("bg").value); }));
   var h = $("colorHint");
   if (worst < 3) { h.textContent = "Low contrast: one of the colors is too close to the background. Phones may not read the code."; h.classList.add("warnText"); }

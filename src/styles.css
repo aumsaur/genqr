@@ -23,7 +23,12 @@ header p{margin:0 0 24px;color:var(--muted);max-width:60ch}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:24px;align-items:start}
 .grid>*{min-width:0}
 .step>summary .st{flex:none}
+/* Tablets: still side by side, with a narrower preview column */
 @media (max-width:880px){
+  .grid{grid-template-columns:minmax(0,1fr) minmax(0,330px)}
+}
+/* Phones: one column with the preview first; a pinned copy follows the scroll (src/pin.js uses the same width) */
+@media (max-width:759px){
   .grid{grid-template-columns:1fr}
   .stagecol{position:static!important;order:-1}
   .stagecol .tape canvas{width:min(100%,260px)}
@@ -67,8 +72,10 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 .seg button{font:inherit;font-size:14px;font-weight:600;border:0;background:transparent;color:var(--muted);padding:9px 8px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--tape);color:var(--tape-ink)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-/* Must come after .row and .row3, or they win and the fields never stack on phones */
-@media (max-width:520px){.row,.row3{grid-template-columns:1fr}}
+/* Stack paired fields when the settings column is narrow: on phones, and beside the preview on tablets.
+   Must come after .row and .row3, or they win and the fields never stack. */
+.steps{container-type:inline-size}
+@container (max-width:480px){.row,.row3{grid-template-columns:1fr}}
 .colors{display:flex;gap:14px;flex-wrap:wrap}
 .sub{margin-top:10px}
 .unit{position:relative}
@@ -86,6 +93,11 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 .check input{width:16px;height:16px;accent-color:var(--ink)}
 .printset{border-top:1px solid var(--line);padding-top:18px}
 .btn.alt{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn.sm{font-size:14px;padding:8px 14px}
+.imgpick{display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;border-radius:8px;outline-offset:4px}
+.imgpick.drag{outline:2px dashed var(--focus)}
+.imgpick img{width:48px;height:48px;object-fit:contain;border:1px solid var(--line);border-radius:6px;background:#fff}
+.imgname{flex:1 1 120px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;color:var(--muted)}
 .linkbtn{font:inherit;font-size:14px;background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:6px}
 .pdfnote{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));width:min(560px,calc(100% - 32px));background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.18);z-index:5}
 .pdfnote span{flex:1 1 100%;font-size:14px}
@@ -118,7 +130,8 @@ input:focus-visible,textarea:focus-visible,select:focus-visible,button:focus-vis
 input[type=color]{width:34px;height:30px;padding:0;border:1px solid var(--line);border-radius:5px;background:none;cursor:pointer}
 .stage{display:flex;flex-direction:column;align-items:center;gap:16px}
 .tape{background:var(--tape);border-radius:10px;padding:clamp(18px,4vw,36px);width:100%;display:flex;justify-content:center}
-.tape canvas{width:min(100%,380px);height:auto;aspect-ratio:1;display:block;border-radius:4px;box-shadow:0 1px 0 rgba(0,0,0,.15)}
+/* The height term keeps the pinned preview column, download buttons included, inside short laptop screens */
+.tape canvas{width:min(100%,380px,max(200px,100vh - 470px));height:auto;aspect-ratio:1;display:block;border-radius:4px;box-shadow:0 1px 0 rgba(0,0,0,.15)}
 .status{font-size:14px;display:flex;gap:8px;align-items:flex-start;min-height:22px;max-width:52ch}
 .status.ok{color:var(--ok)} .status.warn{color:var(--warn)}
 .dot{width:9px;height:9px;border-radius:50%;background:currentColor;flex:none;margin-top:6px}
@@ -136,11 +149,17 @@ input[type=color]{width:34px;height:30px;padding:0;border:1px solid var(--line);
 .batchhead{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .foot{max-width:1080px;margin:0 auto;padding:8px 20px 40px;color:var(--muted);font-size:14px;border-top:1px solid var(--line)}
 .foot a{color:var(--ink)}
-.foot .credit{margin:16px 0 8px}
+.foot .oss{margin-top:16px}
 .oss summary{cursor:pointer;width:max-content}
 .oss ul{padding-left:18px;margin:8px 0}
 .oss li{margin:3px 0}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:7px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast{position:fixed;z-index:6;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:7px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.show{opacity:1}
+/* Phones: small copy of the preview, shown once the big one scrolls away. Tap to go back to it. */
+.pin{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:4;padding:8px;border:0;border-radius:12px;background:var(--tape);box-shadow:0 6px 24px rgba(0,0,0,.25);cursor:pointer;line-height:0}
+.pin canvas{width:112px;height:112px;display:block;border-radius:4px;background:#fff}
+.pin .pindot{position:absolute;top:-5px;left:-5px;width:16px;height:16px;border-radius:50%;background:var(--muted);border:3px solid var(--bg)}
+.pin[data-kind="ok"] .pindot{background:var(--ok)}
+.pin[data-kind="warn"] .pindot{background:var(--warn)}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}

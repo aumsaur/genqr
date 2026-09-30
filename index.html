@@ -115,12 +115,30 @@ ID-00006, https://example.com/item/c3f8e215</textarea>
       <details class="step" open>
         <summary><span class="num">2</span><span class="st">Label in the middle</span><span class="sum" id="sumLabel"></span></summary>
         <div class="stepbody">
+          <div class="field">
+            <span class="lbl" id="labelKindLbl">Put in the middle</span>
+            <div class="seg" role="group" aria-labelledby="labelKindLbl">
+              <button type="button" data-group="labelKind" data-value="text" aria-pressed="true">Text</button>
+              <button type="button" data-group="labelKind" data-value="image" aria-pressed="false">Logo</button>
+            </div>
+          </div>
           <div class="field" id="labelOneWrap">
             <label class="lbl" for="idOne">Label text</label>
             <input type="text" id="idOne" value="ID-00042" autocomplete="off" spellcheck="false">
             <div class="hint">Japanese works too, for example 受付 or A-12番.</div>
           </div>
-          <div class="field">
+          <div class="field" id="imageWrap" hidden>
+            <span class="lbl">Logo</span>
+            <div class="imgpick" id="midDrop">
+              <img id="midThumb" alt="" hidden>
+              <span class="imgname" id="midName">No image chosen</span>
+              <button type="button" class="btn alt sm" id="midPick">Choose image</button>
+              <button type="button" class="linkbtn" id="midClear" hidden>Remove</button>
+              <input type="file" id="midFile" accept="image/*" hidden>
+            </div>
+            <div class="hint">PNG, JPG, WebP or SVG, or drop a file here. Transparent areas show the background color. In a list, every code gets this logo.</div>
+          </div>
+          <div class="field" id="fontWrap">
             <label class="lbl" for="font">Text style</label>
             <select id="font">
               <option value="bold">Bold</option>
@@ -159,14 +177,14 @@ ID-00006, https://example.com/item/c3f8e215</textarea>
               <label id="fg2Wrap" hidden><input type="color" id="fg2" value="#1D4ED8"> End color</label>
             </div>
             <div id="dirWrap" class="sub" hidden>
-              <label class="lbl" for="dir">Direction</label>
-              <select id="dir">
-                <option value="lr">Left to right</option>
-                <option value="tb">Top to bottom</option>
-                <option value="dd">Diagonal, top-left to bottom-right</option>
-                <option value="du">Diagonal, bottom-left to top-right</option>
-                <option value="rad">From the center out</option>
-              </select>
+              <span class="lbl" id="dirLbl">Direction</span>
+              <div class="shapes" role="group" aria-labelledby="dirLbl">
+                <button type="button" data-group="dir" data-value="lr" aria-pressed="true" aria-label="Left to right" title="Left to right"></button>
+                <button type="button" data-group="dir" data-value="tb" aria-pressed="false" aria-label="Top to bottom" title="Top to bottom"></button>
+                <button type="button" data-group="dir" data-value="dd" aria-pressed="false" aria-label="Diagonal, top-left to bottom-right" title="Diagonal, top-left to bottom-right"></button>
+                <button type="button" data-group="dir" data-value="du" aria-pressed="false" aria-label="Diagonal, bottom-left to top-right" title="Diagonal, bottom-left to top-right"></button>
+                <button type="button" data-group="dir" data-value="rad" aria-pressed="false" aria-label="From the center out" title="From the center out"></button>
+              </div>
             </div>
           </div>
           <div class="field">
@@ -180,7 +198,7 @@ ID-00006, https://example.com/item/c3f8e215</textarea>
               <label><input type="color" id="eb" value="#000000"> Center</label>
             </div>
           </div>
-          <div class="field">
+          <div class="field" id="labelColorWrap">
             <span class="lbl" id="labelColorLbl">Label color</span>
             <div class="seg" role="group" aria-labelledby="labelColorLbl">
               <button type="button" data-group="labelMode" data-value="solid" aria-pressed="true">Solid</button>
@@ -223,7 +241,25 @@ ID-00006, https://example.com/item/c3f8e215</textarea>
           </div>
           <div class="field">
             <span class="lbl" id="ballLbl">Corner eye center</span>
-            <div class="shapes" role="group" aria-labelledby="ballLbl">
+            <div class="seg" role="group" aria-labelledby="ballLbl">
+              <button type="button" data-group="eyeFill" data-value="shape" aria-pressed="true">Shape</button>
+              <button type="button" data-group="eyeFill" data-value="image" aria-pressed="false">Logo</button>
+            </div>
+            <div id="cornerImgWrap" class="sub" hidden>
+              <div class="seg" role="group" aria-label="Corner logo">
+                <button type="button" data-group="cornerSrc" data-value="middle" aria-pressed="true">Same as the middle</button>
+                <button type="button" data-group="cornerSrc" data-value="own" aria-pressed="false">Different image</button>
+              </div>
+              <div class="imgpick sub" id="cornerDrop" hidden>
+                <img id="cornerThumb" alt="" hidden>
+                <span class="imgname" id="cornerName">No image chosen</span>
+                <button type="button" class="btn alt sm" id="cornerPick">Choose image</button>
+                <button type="button" class="linkbtn" id="cornerClear" hidden>Remove</button>
+                <input type="file" id="cornerFile" accept="image/*" hidden>
+              </div>
+              <div class="hint">Phones find a QR code by its three corner squares, so the logo in each center has to read as dark and solid, like a filled shape. It's scan-checked; if it fails, try a darker or simpler logo.</div>
+            </div>
+            <div class="shapes sub" id="ballShapes" role="group" aria-labelledby="ballLbl">
               <button type="button" data-group="eyeBall" data-value="square" aria-pressed="true" aria-label="Square" title="Square"></button>
               <button type="button" data-group="eyeBall" data-value="rounded" aria-pressed="false" aria-label="Rounded" title="Rounded"></button>
               <button type="button" data-group="eyeBall" data-value="circle" aria-pressed="false" aria-label="Circle" title="Circle"></button>
@@ -308,7 +344,6 @@ ID-00006, https://example.com/item/c3f8e215</textarea>
   </div>
 </div>
 <footer class="foot">
-  <p class="credit" id="credit">Made by <a href="https://github.com/aumsaur" target="_blank" rel="noopener">aumsaur</a></p>
   <details class="oss">
     <summary>Open-source credits</summary>
     <p>This tool runs entirely in your browser and is built with these open-source libraries:</p>
@@ -323,6 +358,7 @@ ID-00006, https://example.com/item/c3f8e215</textarea>
   </details>
 </footer>
 <div class="toast" id="toast" role="status"></div>
+<button type="button" class="pin" id="pin" hidden aria-label="Back to the preview"><canvas id="pinCanvas" width="112" height="112"></canvas><span class="pindot"></span></button>
 <div class="pdfnote" id="pdfNote" hidden role="alert">
   <span>Printing is blocked in this view. Get a print-ready PDF instead, then print it from your PDF viewer.</span>
   <button class="btn" id="pdfBtn" type="button">Download PDF for printing</button>

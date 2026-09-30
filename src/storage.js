@@ -3,7 +3,7 @@ import { $ } from "./ui/dom.js";
 import { state, modes } from "./state.js";
 
 var STORE = "mannaka-qr:v1";
-var FIELDS = ["idOne","idMany","font","sizePx","lsize","grid","fg","fg2","dir","tc","bg","ef","eb","pSize","pPaper","pCut",
+var FIELDS = ["idOne","idMany","font","sizePx","lsize","grid","fg","fg2","tc","bg","ef","eb","pSize","pPaper","pCut",
   "ctUrl","ctText","ctEmail","ctEmailSubj","ctEmailBody","ctTel","ctSmsNum","ctSmsMsg","ctWifiSsid","ctWifiPass","ctWifiEnc","ctWifiHidden",
   "ctVFirst","ctVLast","ctVOrg","ctVTitle","ctVMobile","ctVPhone","ctVEmail","ctVUrl","ctVStreet","ctVCity","ctVState","ctVZip","ctVCountry","ctLat","ctLng"];
 
@@ -21,6 +21,8 @@ export function restore(o){
     else if (el.tagName === "SELECT") { if ([].some.call(el.options, function(op){ return op.value === o[id]; })) el.value = o[id]; }
     else el.value = o[id];
   });
+  // Saves from before the direction buttons kept it as a form field
+  if (o.dir && o.modes && !o.modes.dir) o.modes.dir = o.dir;
   if (o.modes) {
     Object.keys(modes).forEach(function(g){
       if (!o.modes[g]) return;

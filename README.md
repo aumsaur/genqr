@@ -10,12 +10,14 @@ Built with plain JavaScript modules, bundled by Vite into a single HTML file.
 
 ## Features
 
-- Content types: link, text, email, phone, SMS, WiFi, contact (vCard), location, or a pasted list for many codes at once
-- Label styles: bold, condensed and monospace, with Japanese support (Noto Sans JP)
-- Colors, gradients, dot shapes and corner-eye shapes, with a contrast warning
+- Content types: link, text, email, phone, SMS, WiFi, contact (vCard), location, or a pasted list for many codes at once. Until there's content, a gray placeholder shows the current style
+- In the middle: text (bold, condensed or monospace, with Japanese support from Noto Sans JP) or a logo. A logo is sized with the same damage-allowance math as text
+- Corner eye centers: a shape, or a logo (the middle one, or a different image). A corner logo has to read as dark and solid, and the app checks that
+- Colors, gradients (direction picked from swatches), dot shapes and corner-eye shapes, with a contrast warning
 - PNG, SVG and PDF downloads. The list mode downloads a zip or a multi-page PDF
 - Print sheets at an exact printed size with cut lines, plus a PDF fallback when printing is blocked
-- Inputs are remembered in `localStorage`
+- Side by side on desktops and tablets. On phones, a small copy of the code stays pinned in the corner while you scroll the settings
+- Inputs and logos are remembered in `localStorage`
 
 ## Project structure
 
@@ -29,12 +31,14 @@ mannaka-qr/
 └── src/
     ├── main.js           # Entry: wires controls, restores saved inputs, first draw
     ├── state.js          # Shared UI state (mode, content tab, zoom, button groups)
-    ├── form.js           # Reads settings from the form: opts(), getSize()
+    ├── form.js           # Reads settings from the form: opts(), getSize(), which label or logo to use
     ├── content.js        # Content tabs → the text the QR holds; list parsing
     ├── preview.js        # Single-code preview and list sheet, scan status, redraw scheduling
     ├── panels.js         # Step summaries, label-size bar, color and size hints, zoom
     ├── exporting.js      # PNG / SVG / PDF / zip downloads
     ├── print.js          # Print sheet, PDF fallback, print hints
+    ├── images.js         # Uploaded logos: shrink, trim, remember
+    ├── pin.js            # Phones: pinned copy of the preview
     ├── storage.js        # Remember inputs in this browser
     ├── files.js          # Save a file (Claude artifact downloads, or a normal download)
     ├── styles.css
@@ -43,7 +47,7 @@ mannaka-qr/
     │   ├── engine.js     # Grid choice + label sizing against the error-correction budget
     │   ├── shapes.js     # Dot and eye geometry (shared by canvas, SVG, icons)
     │   ├── render.js     # Draw to canvas, or build SVG
-    │   ├── verify.js     # jsQR scan check
+    │   ├── verify.js     # jsQR scan check, corner logo check
     │   └── fonts.js      # Label fonts and web-font loading
     └── vendor/
         ├── qrcode.js     # qrcode-generator 2.0.4, patched (see below)
