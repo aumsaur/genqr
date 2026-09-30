@@ -2,7 +2,7 @@
 import { $ } from "./ui/dom.js";
 import { state, modes } from "./state.js";
 
-var STORE = "mannaka-qr:v1";
+var STORE = "genqr:v1";
 var FIELDS = ["idOne","idMany","font","sizePx","lsize","grid","fg","fg2","tc","bg","ef","eb","pSize","pPaper","pCut",
   "ctUrl","ctText","ctEmail","ctEmailSubj","ctEmailBody","ctTel","ctSmsNum","ctSmsMsg","ctWifiSsid","ctWifiPass","ctWifiEnc","ctWifiHidden",
   "ctVFirst","ctVLast","ctVOrg","ctVTitle","ctVMobile","ctVPhone","ctVEmail","ctVUrl","ctVStreet","ctVCity","ctVState","ctVZip","ctVCountry","ctLat","ctLng"];
@@ -41,6 +41,17 @@ export function saveSoon(){
     try { localStorage.setItem(STORE, JSON.stringify(snapshot())); }
     catch (e) { $("savedNote").textContent = "This browser isn't keeping your inputs, so they'll reset next time."; }
   }, 300);
+}
+// The app was called Mannaka QR until September 2026: move saved inputs and logos over to the new keys
+export function migrateOldKeys(){
+  try {
+    Object.keys(localStorage).forEach(function(k){
+      if (k.indexOf("mannaka-qr:") !== 0) return;
+      var nk = "genqr:" + k.slice("mannaka-qr:".length);
+      if (localStorage.getItem(nk) === null) localStorage.setItem(nk, localStorage.getItem(k));
+      localStorage.removeItem(k);
+    });
+  } catch (e) {}
 }
 export function loadSaved(){
   try { return JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) { return null; }

@@ -16,7 +16,7 @@ function renderOne(){
   updatePin();
 }
 // Stand-in shown in muted gray while there's no content yet (or it's too long), so the chosen style still shows
-var PLACEHOLDER = "https://example.com/mannaka-qr";
+var PLACEHOLDER = "https://example.com/genqr";
 var MUTED = { fg: "#C4CBD3", fg2: "#C4CBD3", tc: "#A3ADB8", ef: "#C4CBD3", eb: "#C4CBD3", bg: "#FFFFFF", codeMode: "solid" };
 function drawPlaceholder(cv, label, px){
   try { drawCode(cv, PLACEHOLDER, label, Object.assign({}, opts(), MUTED), px); } catch (e) {}

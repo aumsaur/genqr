@@ -8,10 +8,11 @@ import { refresh, renderNow, setCtype } from "./preview.js";
 import { updateFmtUI, updateSummaries, showLsize, updateColorUI, updateImageUI, applyView } from "./panels.js";
 import { downloadOne, downloadMany } from "./exporting.js";
 import { doPrint, downloadPdf, updatePrintHint } from "./print.js";
-import { snapshot, restore, saveSoon, loadSaved, clearSaved } from "./storage.js";
+import { snapshot, restore, saveSoon, loadSaved, clearSaved, migrateOldKeys } from "./storage.js";
 import { initPin } from "./pin.js";
 import { setImage, clearImage, restoreImages } from "./images.js";
 
+migrateOldKeys();
 onFontsLoaded(refresh);
 
 // Content tabs

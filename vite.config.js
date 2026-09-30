@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 // Where the built page is served. Used for sitemap.xml (and robots.txt when it's the domain root).
 // Set SITE_URL in .env, or: SITE_URL=https://example.com/ npm run build
-const DEFAULT_SITE_URL = "https://aumsaur.github.io/mannaka-qr/";
+const DEFAULT_SITE_URL = "https://aumsaur.github.io/genqr/";
 
 const unused = fileURLToPath(new URL("./src/vendor/unused.js", import.meta.url));
 
@@ -26,7 +26,7 @@ function sitemap(siteUrl) {
   if (!url.pathname.endsWith("/")) url.pathname += "/";
   const loc = url.href.replace(/&/g, "&amp;").replace(/</g, "&lt;");
   return {
-    name: "mannaka-sitemap",
+    name: "genqr-sitemap",
     apply: "build",
     generateBundle() {
       const lastmod = new Date().toISOString().slice(0, 10);

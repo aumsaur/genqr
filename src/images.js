@@ -3,7 +3,7 @@
 import { toast } from "./ui/dom.js";
 import { state } from "./state.js";
 
-var KEY = "mannaka-qr:image:";
+var KEY = "genqr:image:";
 var MAX = 1024;   // longest side kept, enough for a 4096 px export
 
 function loadImg(src){

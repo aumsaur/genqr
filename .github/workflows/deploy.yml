@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # base_url is the site's real address (https://aumsaur.github.io/mannaka-qr, or a custom domain),
+      # base_url is the site's real address (https://aumsaur.github.io/genqr, or a custom domain),
       # so sitemap.xml always points at wherever this repo is published
       - name: Build
         run: npm run build

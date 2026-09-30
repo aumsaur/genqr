@@ -2,8 +2,8 @@
 //
 // QR Code Generator for JavaScript
 //
-// Vendored from qrcode-generator 2.0.4 (npm) and modified for Mannaka QR.
-// Every change is marked "Mannaka QR". The changes expose the layout the
+// Vendored from qrcode-generator 2.0.4 (npm) and modified for GenQR.
+// Every change is marked "GenQR". The changes expose the layout the
 // label sizing needs:
 //   - qr.getCodewordMap(): for each module, the index of the codeword it
 //     carries (-1 = function pattern, -2 = remainder bit)
@@ -44,7 +44,7 @@ export const qrcode = function(typeNumber, errorCorrectionLevel) {
   let _moduleCount = 0;
   let _dataCache = null;
   const _dataList = [];
-  // Mannaka QR: codeword index per module, filled in by mapData()
+  // GenQR: codeword index per module, filled in by mapData()
   let _codewordMap = null;
 
   const _this = {};
@@ -230,7 +230,7 @@ export const qrcode = function(typeNumber, errorCorrectionLevel) {
     let byteIndex = 0;
     const maskFunc = QRUtil.getMaskFunction(maskPattern);
 
-    // Mannaka QR: record which codeword each data module belongs to
+    // GenQR: record which codeword each data module belongs to
     _codewordMap = [];
     for (let r = 0; r < _moduleCount; r += 1) {
       _codewordMap.push(new Array(_moduleCount).fill(-1));
@@ -252,7 +252,7 @@ export const qrcode = function(typeNumber, errorCorrectionLevel) {
               dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
             }
 
-            // Mannaka QR
+            // GenQR
             _codewordMap[row][col - c] = byteIndex < data.length ? byteIndex : -2;
 
             const mask = maskFunc(row, col - c);
@@ -439,12 +439,12 @@ export const qrcode = function(typeNumber, errorCorrectionLevel) {
     return _moduleCount;
   };
 
-  // Mannaka QR
+  // GenQR
   _this.getTypeNumber = function() {
     return _typeNumber;
   };
 
-  // Mannaka QR
+  // GenQR
   _this.getCodewordMap = function() {
     return _codewordMap;
   };
@@ -2267,7 +2267,7 @@ export default qrcode;
 export const stringToBytes = qrcode.stringToBytes;
 
 //---------------------------------------------------------------------
-// Mannaka QR additions
+// GenQR additions
 //---------------------------------------------------------------------
 
 /**

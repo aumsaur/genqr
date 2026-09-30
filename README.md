@@ -1,8 +1,8 @@
-# Mannaka QR
+# GenQR
 
-真ん中 (mannaka): right in the middle. A browser tool that makes QR codes with your own text in the center, and sizes that text so phones can still scan the code.
+Branded QR codes, checked to scan. Add a label or logo, pick your colors and shapes, then download or print one or a hundred.
 
-The label is not a picture pasted on top. For each code the app works out which squares the label actually flips, counts them against each error-correction block's recovery budget, and finds the largest label that leaves half the budget spare. Every result is then decoded with jsQR to confirm it still reads.
+A label or logo covers part of a code, so the app measures what it covers. It works out which squares actually change, counts them against each error-correction block's recovery budget, and makes the label as large as it can go while leaving half that budget spare. Every result is then decoded with jsQR to confirm it still reads.
 
 Everything runs in the browser: no server, no uploads.
 
@@ -22,7 +22,7 @@ Built with plain JavaScript modules, bundled by Vite into a single HTML file.
 ## Project structure
 
 ```
-mannaka-qr/
+genqr/
 ├── index.html            # Markup for the whole page
 ├── vite.config.js        # Single-file build, sitemap.xml / robots.txt, jsPDF extras stubbed out
 ├── .env.example          # SITE_URL for the sitemap
@@ -67,7 +67,7 @@ npm run preview   # serve dist/
 
 ## Deploying
 
-Pushing to `main` builds and publishes the site to GitHub Pages at **https://aumsaur.github.io/mannaka-qr/**, through `.github/workflows/deploy.yml`. You can also run the workflow by hand from the Actions tab.
+Pushing to `main` builds and publishes the site to GitHub Pages at **https://aumsaur.github.io/genqr/**, through `.github/workflows/deploy.yml`. You can also run the workflow by hand from the Actions tab.
 
 One-time setup on a new repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**. Until then the "Setup Pages" step fails.
 
@@ -75,7 +75,7 @@ The workflow sets `SITE_URL` from the repo's Pages address, so the sitemap follo
 
 ## Sitemap and search indexing
 
-The build writes `dist/sitemap.xml` for the address in `SITE_URL`. On GitHub Pages the workflow sets it for you. For local builds the default is `https://aumsaur.github.io/mannaka-qr/`. To change it, copy `.env.example` to `.env` and edit it, or run:
+The build writes `dist/sitemap.xml` for the address in `SITE_URL`. On GitHub Pages the workflow sets it for you. For local builds the default is `https://aumsaur.github.io/genqr/`. To change it, copy `.env.example` to `.env` and edit it, or run:
 
 ```bash
 SITE_URL=https://qr.example.com/ npm run build
@@ -94,7 +94,7 @@ Google doesn't require you to submit anything. It finds pages through links, so 
 
 ## The patched QR library
 
-`src/vendor/qrcode.js` is [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 2.0.4 with small additions, each marked `Mannaka QR`:
+`src/vendor/qrcode.js` is [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) 2.0.4 with small additions, each marked `GenQR`:
 
 - `qr.getCodewordMap()`: for every module, the index of the codeword it carries. This is how the sizing knows which error-correction block a covered square costs.
 - `qr.getTypeNumber()`: the version chosen by `make()`.

@@ -1,8 +1,8 @@
 {
-  "name": "mannaka-qr",
+  "name": "genqr",
   "version": "0.1.0",
   "private": true,
-  "description": "QR codes with your own text in the middle, sized so phones can still scan them.",
+  "description": "Branded QR codes, checked to scan.",
   "type": "module",
   "scripts": {
     "dev": "vite",
